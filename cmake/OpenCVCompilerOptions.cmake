@@ -188,6 +188,15 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 if(MSVC)
+	set( WINDOWS_STORE_SUPPORT OFF CACHE BOOL "Compile for Windows Store support" )
+	if( WINDOWS_STORE_SUPPORT )
+		#TODO: update this when there is a new version of CMake
+		message( "CMake does not support the global \"Compile for Windows Store\" switch yet, you have to turn that on manually.")
+		message( "Only tested with core, imgproc, objdetect modules, rest might not even compile." )
+		add_definitions(-DUNICODE -D_UNICODE)
+		set(OPENCV_EXTRA_FLAGS "${OPENCV_EXTRA_FLAGS} /D WINAPI_FAMILY=WINAPI_FAMILY_APP /D _WIN32_WINNT=0x0602 /Y-")
+	endif()
+
   set(OPENCV_EXTRA_FLAGS "${OPENCV_EXTRA_FLAGS} /D _CRT_SECURE_NO_DEPRECATE /D _CRT_NONSTDC_NO_DEPRECATE /D _SCL_SECURE_NO_WARNINGS")
   # 64-bit portability warnings, in MSVC80
   if(MSVC80)
@@ -252,6 +261,10 @@ set(OPENCV_EXTRA_FLAGS_DEBUG "${OPENCV_EXTRA_FLAGS_DEBUG}" CACHE INTERNAL "Extra
 set(OPENCV_EXTRA_EXE_LINKER_FLAGS "${OPENCV_EXTRA_EXE_LINKER_FLAGS}" CACHE INTERNAL "Extra linker flags")
 set(OPENCV_EXTRA_EXE_LINKER_FLAGS_RELEASE "${OPENCV_EXTRA_EXE_LINKER_FLAGS_RELEASE}" CACHE INTERNAL "Extra linker flags for Release build")
 set(OPENCV_EXTRA_EXE_LINKER_FLAGS_DEBUG "${OPENCV_EXTRA_EXE_LINKER_FLAGS_DEBUG}" CACHE INTERNAL "Extra linker flags for Debug build")
+
+if( WINDOWS_STORE_SUPPORT )
+	set(OPENCV_EXTRA_EXE_LINKER_FLAGS "${OPENCV_EXTRA_EXE_LINKER_FLAGS} /APPCONTAINER")
+endif()
 
 #combine all "extra" options
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OPENCV_EXTRA_FLAGS} ${OPENCV_EXTRA_C_FLAGS}")

@@ -721,6 +721,7 @@ void RNG::fill( InputOutputArray _mat, int disttype,
 #ifdef WINCE
 #	define TLS_OUT_OF_INDEXES ((DWORD)0xFFFFFFFF)
 #endif
+#if WINAPI_FAMILY!=WINAPI_FAMILY_APP
 static DWORD tlsRNGKey = TLS_OUT_OF_INDEXES;
 
 void deleteThreadRNGData()
@@ -728,9 +729,15 @@ void deleteThreadRNGData()
     if( tlsRNGKey != TLS_OUT_OF_INDEXES )
         delete (RNG*)TlsGetValue( tlsRNGKey );
 }
+#endif
 
 RNG& theRNG()
 {
+#if WINAPI_FAMILY==WINAPI_FAMILY_APP
+	//Windows Store version - Warning - this is NOT thread local
+	static RNG rng;
+	return rng;
+#else
     if( tlsRNGKey == TLS_OUT_OF_INDEXES )
     {
         tlsRNGKey = TlsAlloc();
@@ -743,6 +750,7 @@ RNG& theRNG()
         TlsSetValue( tlsRNGKey, rng );
     }
     return *rng;
+#endif
 }
 
 #else

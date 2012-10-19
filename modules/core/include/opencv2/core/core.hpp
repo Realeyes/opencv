@@ -117,7 +117,10 @@ CV_EXPORTS WString toUtf16(const string& str);
 #endif
 
 CV_EXPORTS string format( const char* fmt, ... );
+#if WINAPI_FAMILY!=WINAPI_FAMILY_APP
+//Windows Store apps handle temp files TOTALLY diferently - the function cannot compile
 CV_EXPORTS string tempfile( const char* suffix CV_DEFAULT(0));
+#endif
 
 // matrix decomposition types
 enum { DECOMP_LU=0, DECOMP_SVD=1, DECOMP_EIG=2, DECOMP_CHOLESKY=3, DECOMP_QR=4, DECOMP_NORMAL=16 };

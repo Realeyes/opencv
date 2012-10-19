@@ -418,7 +418,13 @@ int getNumberOfCPUs(void)
 {
 #if defined WIN32 || defined _WIN32
     SYSTEM_INFO sysinfo;
+#if WINAPI_FAMILY==WINAPI_FAMILY_APP
+	//Windows Store
+	GetNativeSystemInfo( &sysinfo );
+#else
+	//old
     GetSystemInfo( &sysinfo );
+#endif
 
     return (int)sysinfo.dwNumberOfProcessors;
 #elif defined ANDROID
@@ -471,6 +477,8 @@ string format( const char* fmt, ... )
     return string(buf);
 }
 
+#if WINAPI_FAMILY!=WINAPI_FAMILY_APP
+//Windows Store app APIs handle temp files TOTALLY differently.
 string tempfile( const char* suffix )
 {
 #if defined WIN32 || defined _WIN32
@@ -527,7 +535,7 @@ string tempfile( const char* suffix )
     return fname;
 # endif
 }
-
+#endif
 static CvErrorCallback customErrorCallback = 0;
 static void* customErrorCallbackData = 0;
 static bool breakOnError = false;

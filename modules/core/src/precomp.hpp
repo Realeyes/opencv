@@ -47,6 +47,10 @@
 #include "cvconfig.h"
 #endif
 
+#if defined WIN32 || defined _WIN32
+#include "winapifamily.h"
+#endif
+
 #include "opencv2/core/core.hpp"
 #include "opencv2/core/core_c.h"
 #include "opencv2/core/internal.hpp"
@@ -86,7 +90,9 @@ extern const uchar g_Saturate8u[];
 
 #if defined WIN32 || defined _WIN32
 void deleteThreadAllocData();
+#if WINAPI_FAMILY!=WINAPI_FAMILY_APP
 void deleteThreadRNGData();
+#endif
 #endif
 
 template<typename T1, typename T2=T1, typename T3=T1> struct OpAdd

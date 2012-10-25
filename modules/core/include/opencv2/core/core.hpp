@@ -49,6 +49,10 @@
 #include "opencv2/core/types_c.h"
 #include "opencv2/core/version.hpp"
 
+#if defined WIN32 || defined _WIN32
+#include "winapifamily.h"
+#endif
+
 #ifdef __cplusplus
 
 #ifndef SKIP_INCLUDES

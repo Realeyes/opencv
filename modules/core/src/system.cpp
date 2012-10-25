@@ -923,8 +923,10 @@ BOOL WINAPI DllMain( HINSTANCE, DWORD  fdwReason, LPVOID )
     if( fdwReason == DLL_THREAD_DETACH || fdwReason == DLL_PROCESS_DETACH )
     {
         cv::deleteThreadAllocData();
-        cv::deleteThreadRNGData();
-    }
+#if WINAPI_FAMILY!=WINAPI_FAMILY_APP
+		cv::deleteThreadRNGData();
+#endif
+	}
     return TRUE;
 }
 #endif
